@@ -1,7 +1,7 @@
 'use strict';
 
 const account1 = {
-  owner: 'John Smith',
+  owner: 'John Smith Cooper',
   transactions: [500, -350, 560, 800, -60, 1130, 2270, -300],
   interestRate: 2.1,
   pin: 1111,
@@ -54,3 +54,31 @@ const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
+
+const displayTransactions = function (transactions) {
+  containerTransactions.innerHTML = '';
+
+  for (let [index, transaction] of transactions.entries()) {
+    const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
+
+    const html = `
+      <div class="transactions__row">
+        <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
+        <div class="transactions__value">${transaction}  €</div>
+      </div>`;
+    containerTransactions.insertAdjacentHTML('afterbegin', html);
+  }
+};
+
+const generateUsernames = function (accounts) {
+  accounts.forEach(function (account) {
+    account.username = account.owner
+      .toLowerCase()
+      .split(' ')
+      .map(value => value[0])
+      .join('');
+  });
+};
+
+displayTransactions(account1.transactions);
+generateUsernames(accounts);
