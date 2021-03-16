@@ -80,5 +80,13 @@ const generateUsernames = function (accounts) {
   });
 };
 
+const displayBalance = function (account) {
+  labelBalance.textContent = account.transactions.reduce((acc, cur) => acc + cur) + ' €';
+};
+
+const withdrawals = accounts.map(value => value.transactions.filter(tr => tr < 0));
+const deposits = accounts.map(value => value.transactions.filter(tr => tr > 0));
+
 displayTransactions(account1.transactions);
 generateUsernames(accounts);
+displayBalance(account1);
