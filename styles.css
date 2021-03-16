@@ -86,7 +86,7 @@
     grid-template-rows: auto repeat(3, 15rem) auto;
     gap: 2rem;
   
-    opacity: 0;
+    /* opacity: 0; */
     transition: all 1s;
   }
   
@@ -156,6 +156,7 @@
   .transactions__value {
     font-size: 1.7rem;
     margin-left: auto;
+    font-weight: 600;
   }
   
   .summary {
