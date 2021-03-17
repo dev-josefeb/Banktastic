@@ -87,6 +87,17 @@ btnTransfer.addEventListener('click', function (e) {
   clearInputFields();
 });
 
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const loanAmount = Number(inputLoanAmount.value);
+
+  if (loanAmount <= 0 || !activeAccount.transactions.some(tr => tr >= loanAmount * 0.1)) return;
+
+  activeAccount.transactions.push(loanAmount);
+  updateUI(activeAccount);
+  inputLoanAmount.value = '';
+});
+
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
 
