@@ -87,6 +87,23 @@ btnTransfer.addEventListener('click', function (e) {
   clearInputFields();
 });
 
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const inputUsername = inputCloseUsername.value;
+  const inputUserPin = Number(inputClosePin.value);
+
+  if (inputUsername !== activeAccount.username || inputUserPin !== activeAccount.pin) return;
+
+  accounts.splice(
+    accounts.findIndex(el => el === activeAccount),
+    1
+  );
+
+  labelWelcome.textContent = 'Log in to get started';
+  containerApp.style.opacity = 0;
+});
+
 const generateUsernames = function (accounts) {
   accounts.forEach(function (account) {
     account.username = account.owner
