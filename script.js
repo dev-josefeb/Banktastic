@@ -67,9 +67,20 @@ btnLogin.addEventListener('click', function (e) {
 
   clearInputFields();
   displayWelcomeUI();
-  displayTransactions(activeAccount?.transactions);
-  displayBalance(activeAccount);
-  displaySummary(activeAccount);
+  updateUI(activeAccount);
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault(); // Prevent form from reloading from login (submit)
+
+  const transferUsername = inputTransferTo.value;
+  const transferAmount = Number(inputTransferAmount.value);
+
+  const transferUser = accounts.find(el => el.username === transferUsername);
+
+  activeAccount.transactions.push(-transferAmount);
+  transferUser.transactions.push(transferAmount);
+  updateUI(activeAccount);
 });
 
 const generateUsernames = function (accounts) {
@@ -136,6 +147,12 @@ const displaySummary = function (account) {
   displayTotalDeposits(account.transactions);
   displayTotalWithdrawals(account.transactions);
   displayInterest(account);
+};
+
+const updateUI = function (account) {
+  displayTransactions(activeAccount?.transactions);
+  displayBalance(activeAccount);
+  displaySummary(activeAccount);
 };
 
 generateUsernames(accounts);
