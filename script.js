@@ -76,14 +76,15 @@ btnTransfer.addEventListener('click', function (e) {
 
   const transferUsername = inputTransferTo.value;
   const transferAmount = Number(inputTransferAmount.value);
-  if (transferAmount <= 0 || transferAmount > activeAccountBalance || transferUser.username === activeAccount.username) return;
 
   const transferUser = accounts.find(el => el.username === transferUsername);
 
-  if (!transferUser) return;
+  if (transferAmount <= 0 || transferAmount > activeAccountBalance || transferUser?.username === activeAccount.username || !transferUser) return;
+
   activeAccount.transactions.push(-transferAmount);
   transferUser.transactions.push(transferAmount);
   updateUI(activeAccount);
+  clearInputFields();
 });
 
 const generateUsernames = function (accounts) {
@@ -104,6 +105,11 @@ const displayWelcomeUI = function () {
 const clearInputFields = function () {
   inputLoginUsername.value = inputLoginPin.value = '';
   inputLoginPin.blur();
+};
+
+const clearTransferFields = function () {
+  inputTransferTo.value = '';
+  inputTransferAmount.value = '';
 };
 
 const displayTransactions = function (transactions) {
@@ -157,6 +163,7 @@ const updateUI = function (account) {
   displayTransactions(activeAccount?.transactions);
   displayBalance(activeAccount);
   displaySummary(activeAccount);
+  clearTransferFields();
 };
 
 generateUsernames(accounts);
