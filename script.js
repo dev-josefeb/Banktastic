@@ -57,6 +57,7 @@ const labelTimer = document.querySelector('.timer');
 
 let activeAccount;
 let activeAccountBalance;
+let isSorted;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (submit)
@@ -115,6 +116,12 @@ btnClose.addEventListener('click', function (e) {
   containerApp.style.opacity = 0;
 });
 
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  isSorted = !isSorted;
+  displayTransactions(activeAccount.transactions, isSorted);
+});
+
 const generateUsernames = function (accounts) {
   accounts.forEach(function (account) {
     account.username = account.owner
@@ -140,10 +147,12 @@ const displayWelcomeUI = function () {
   containerApp.style.opacity = 100;
 };
 
-const displayTransactions = function (transactions) {
+const displayTransactions = function (transactions, sort = false) {
   containerTransactions.innerHTML = '';
 
-  for (let [index, transaction] of transactions.entries()) {
+  let trans = sort ? transactions.slice().sort((a, b) => a - b) : transactions;
+
+  for (let [index, transaction] of trans.entries()) {
     const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
