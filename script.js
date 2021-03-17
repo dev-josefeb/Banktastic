@@ -65,6 +65,7 @@ btnLogin.addEventListener('click', function (e) {
 
   activeAccount = accounts.find(el => el.username === username && el.pin === password);
 
+  clearInputFields();
   displayWelcomeUI();
   displayTransactions(activeAccount?.transactions);
   displayBalance(activeAccount);
@@ -84,6 +85,11 @@ const generateUsernames = function (accounts) {
 const displayWelcomeUI = function () {
   labelWelcome.textContent = `Welcome back, ${activeAccount.owner.split(' ')[0]}`;
   containerApp.style.opacity = 100;
+};
+
+const clearInputFields = function () {
+  inputLoginUsername.value = inputLoginPin.value = '';
+  inputLoginPin.blur();
 };
 
 const displayTransactions = function (transactions) {
