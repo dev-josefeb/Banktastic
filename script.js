@@ -64,7 +64,7 @@ const displayTransactions = function (transactions) {
     const html = `
       <div class="transactions__row">
         <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
-        <div class="transactions__value">${transaction}  €</div>
+        <div class="transactions__value">${transaction}€</div>
       </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', html);
   }
@@ -81,12 +81,37 @@ const generateUsernames = function (accounts) {
 };
 
 const displayBalance = function (account) {
-  labelBalance.textContent = account.transactions.reduce((acc, cur) => acc + cur) + ' €';
+  labelBalance.textContent = account.transactions.reduce((acc, cur) => acc + cur) + '€';
 };
 
-const withdrawals = accounts.map(value => value.transactions.filter(tr => tr < 0));
-const deposits = accounts.map(value => value.transactions.filter(tr => tr > 0));
+const displayTotalDeposits = function (account) {
+  labelSumIn.textContent = account.filter(val => val > 0).reduce((acc, el) => (acc += el)) + '€';
+};
+
+const displayTotalWithdrawals = function (account) {
+  labelSumOut.textContent =
+    account
+      .filter(val => val < 0)
+      .map(val => val * -1)
+      .reduce((acc, el) => (acc += el)) + '€';
+};
+
+const displayInterest = function (account) {
+  labelSumInterest.textContent =
+    account.transactions
+      .map(val => val * account.interestRate * 0.01)
+      .filter(val => val >= 1)
+      .reduce((acc, el) => (acc += el))
+      .toFixed(2) + '€';
+};
+
+const displaySummary = function (account) {
+  displayTotalDeposits(account.transactions);
+  displayTotalWithdrawals(account.transactions);
+  displayInterest(account);
+};
 
 displayTransactions(account1.transactions);
 generateUsernames(accounts);
 displayBalance(account1);
+displaySummary(account1);
