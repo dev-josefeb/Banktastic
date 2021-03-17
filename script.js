@@ -55,20 +55,21 @@ const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
-const displayTransactions = function (transactions) {
-  containerTransactions.innerHTML = '';
+let activeAccount;
 
-  for (let [index, transaction] of transactions.entries()) {
-    const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault(); // Prevent form from reloading from login (submit)
 
-    const html = `
-      <div class="transactions__row">
-        <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
-        <div class="transactions__value">${transaction}€</div>
-      </div>`;
-    containerTransactions.insertAdjacentHTML('afterbegin', html);
-  }
-};
+  const username = inputLoginUsername.value;
+  const password = Number(inputLoginPin.value);
+
+  activeAccount = accounts.find(el => el.username === username && el.pin === password);
+
+  displayWelcomeUI();
+  displayTransactions(activeAccount?.transactions);
+  displayBalance(activeAccount);
+  displaySummary(activeAccount);
+});
 
 const generateUsernames = function (accounts) {
   accounts.forEach(function (account) {
@@ -78,6 +79,26 @@ const generateUsernames = function (accounts) {
       .map(value => value[0])
       .join('');
   });
+};
+
+const displayWelcomeUI = function () {
+  labelWelcome.textContent = `Welcome back, ${activeAccount.owner.split(' ')[0]}`;
+  containerApp.style.opacity = 100;
+};
+
+const displayTransactions = function (transactions) {
+  containerTransactions.innerHTML = '';
+
+  for (let [index, transaction] of transactions.entries()) {
+    const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
+
+    const html = `
+    <div class="transactions__row">
+    <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
+    <div class="transactions__value">${transaction}€</div>
+    </div>`;
+    containerTransactions.insertAdjacentHTML('afterbegin', html);
+  }
 };
 
 const displayBalance = function (account) {
@@ -111,7 +132,4 @@ const displaySummary = function (account) {
   displayInterest(account);
 };
 
-displayTransactions(account1.transactions);
 generateUsernames(accounts);
-displayBalance(account1);
-displaySummary(account1);
