@@ -125,11 +125,6 @@ const generateUsernames = function (accounts) {
   });
 };
 
-const displayWelcomeUI = function () {
-  labelWelcome.textContent = `Welcome back, ${activeAccount.owner.split(' ')[0]}`;
-  containerApp.style.opacity = 100;
-};
-
 const clearInputFields = function () {
   inputLoginUsername.value = inputLoginPin.value = '';
   inputLoginPin.blur();
@@ -138,6 +133,11 @@ const clearInputFields = function () {
 const clearTransferFields = function () {
   inputTransferTo.value = '';
   inputTransferAmount.value = '';
+};
+
+const displayWelcomeUI = function () {
+  labelWelcome.textContent = `Welcome back, ${activeAccount.owner.split(' ')[0]}`;
+  containerApp.style.opacity = 100;
 };
 
 const displayTransactions = function (transactions) {
