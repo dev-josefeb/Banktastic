@@ -56,6 +56,7 @@ const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
 let activeAccount;
+let activeAccountBalance;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (submit)
@@ -71,13 +72,15 @@ btnLogin.addEventListener('click', function (e) {
 });
 
 btnTransfer.addEventListener('click', function (e) {
-  e.preventDefault(); // Prevent form from reloading from login (submit)
+  e.preventDefault(); // Prevent form from reloading from login (on submit)
 
   const transferUsername = inputTransferTo.value;
   const transferAmount = Number(inputTransferAmount.value);
+  if (transferAmount <= 0 || transferAmount > activeAccountBalance || transferUser.username === activeAccount.username) return;
 
   const transferUser = accounts.find(el => el.username === transferUsername);
 
+  if (!transferUser) return;
   activeAccount.transactions.push(-transferAmount);
   transferUser.transactions.push(transferAmount);
   updateUI(activeAccount);
@@ -119,7 +122,8 @@ const displayTransactions = function (transactions) {
 };
 
 const displayBalance = function (account) {
-  labelBalance.textContent = account.transactions.reduce((acc, cur) => acc + cur) + '€';
+  activeAccountBalance = account.transactions.reduce((acc, cur) => acc + cur);
+  labelBalance.textContent = activeAccountBalance + '€';
 };
 
 const displayTotalDeposits = function (account) {
