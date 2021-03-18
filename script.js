@@ -106,11 +106,14 @@ btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
   const loanAmount = +inputLoanAmount.value;
 
-  if (loanAmount <= 0 || !activeAccount.transactions.some(tr => tr >= loanAmount * 0.1)) return;
+  setTimeout(function () {
+    if (loanAmount <= 0 || !activeAccount.transactions.some(tr => tr >= loanAmount * 0.1)) return;
 
-  activeAccount.transactions.push(loanAmount);
-  activeAccount.transactionDates.push(new Date().toISOString());
-  updateUI(activeAccount);
+    activeAccount.transactions.push(loanAmount);
+    activeAccount.transactionDates.push(new Date().toISOString());
+    updateUI(activeAccount);
+  }, 2000);
+
   inputLoanAmount.value = '';
 });
 
