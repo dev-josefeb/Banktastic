@@ -160,6 +160,16 @@ const displayWelcomeUI = function () {
   containerApp.style.opacity = 100;
 };
 
+const displayDate = function () {
+  const now = new Date();
+  const day = `${now.getDate()}`.padStart(2, 0);
+  const month = `${now.getMonth() + 1}`.padStart(2, 0);
+  const year = now.getFullYear();
+  const hour = now.getHours();
+  const min = `${now.getMinutes()}`.padStart(2, 0);
+  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+};
+
 const displayTransactions = function (transactions, sort = false) {
   containerTransactions.innerHTML = '';
 
@@ -215,6 +225,7 @@ const displaySummary = function (account) {
 };
 
 const updateUI = function (account) {
+  displayDate();
   displayTransactions(activeAccount?.transactions);
   displayBalance(activeAccount);
   displaySummary(activeAccount);
