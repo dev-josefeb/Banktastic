@@ -88,14 +88,16 @@ btnTransfer.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (on submit)
 
   const transferUsername = inputTransferTo.value;
-  const transferAmount = (+inputTransferAmount.value).toFixed(2);
-
+  const transferAmount = +(+inputTransferAmount.value).toFixed(2);
   const transferUser = accounts.find(el => el.username === transferUsername);
 
   if (transferAmount <= 0 || transferAmount > activeAccountBalance || transferUser?.username === activeAccount.username || !transferUser) return;
 
   activeAccount.transactions.push(-transferAmount);
+  activeAccount.transactionDates.push(new Date().toISOString());
   transferUser.transactions.push(transferAmount);
+  transferUser.transactionDates.push(new Date().toISOString());
+
   updateUI(activeAccount);
   clearInputFields();
 });
@@ -107,6 +109,8 @@ btnLoan.addEventListener('click', function (e) {
   if (loanAmount <= 0 || !activeAccount.transactions.some(tr => tr >= loanAmount * 0.1)) return;
 
   activeAccount.transactions.push(loanAmount);
+  activeAccount.transactionDates.push(new Date().toISOString());
+  console.log(activeAccount);
   updateUI(activeAccount);
   inputLoanAmount.value = '';
 });
@@ -165,7 +169,7 @@ const displayDate = function () {
   const day = `${now.getDate()}`.padStart(2, 0);
   const month = `${now.getMonth() + 1}`.padStart(2, 0);
   const year = now.getFullYear();
-  const hour = now.getHours();
+  const hour = `${now.getHours()}`.padStart(2, 0);
   const min = `${now.getMinutes()}`.padStart(2, 0);
   labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 };
@@ -188,7 +192,7 @@ const displayTransactions = function (account, sort = false) {
     <div class="transactions__row">
     <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
     <div class="transactions__date">${displayDate}</div>
-    <div class="transactions__value">${transaction.toFixed(2)}€</div>
+    <div class="transactions__value">${transaction}€</div>
     </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', html);
   }
