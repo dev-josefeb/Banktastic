@@ -5,7 +5,7 @@ const account1 = {
   transactions: [500, -350, 560, 800, -60, 1130, 2270, -300],
   interestRate: 2.1,
   pin: 1111,
-  movementsDates: ['2019-11-18T21:31:17.178Z', '2019-12-23T07:42:02.383Z', '2020-01-28T09:15:04.904Z', '2020-04-01T10:17:24.185Z', '2020-05-08T14:11:59.604Z', '2020-05-27T17:01:17.194Z', '2020-07-11T23:36:17.929Z', '2020-07-12T10:51:36.790Z'],
+  transactionDates: ['2019-11-18T21:31:17.178Z', '2019-12-23T07:42:02.383Z', '2020-01-28T09:15:04.904Z', '2020-04-01T10:17:24.185Z', '2020-05-08T14:11:59.604Z', '2020-05-27T17:01:17.194Z', '2020-07-11T23:36:17.929Z', '2020-07-12T10:51:36.790Z'],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
 };
@@ -15,7 +15,7 @@ const account2 = {
   transactions: [1000, 200, -150, 5790, 525, -1000, 10500, -90],
   interestRate: 1.6,
   pin: 2222,
-  movementsDates: ['2019-11-01T13:15:33.035Z', '2019-11-30T09:48:16.867Z', '2019-12-25T06:04:23.907Z', '2020-01-25T14:18:46.235Z', '2020-02-05T16:33:06.386Z', '2020-04-10T14:43:26.374Z', '2020-06-25T18:49:59.371Z', '2020-07-26T12:01:20.894Z'],
+  transactionDates: ['2019-11-01T13:15:33.035Z', '2019-11-30T09:48:16.867Z', '2019-12-25T06:04:23.907Z', '2020-01-25T14:18:46.235Z', '2020-02-05T16:33:06.386Z', '2020-04-10T14:43:26.374Z', '2020-06-25T18:49:59.371Z', '2020-07-26T12:01:20.894Z'],
   currency: 'USD',
   locale: 'en-US',
 };
@@ -25,7 +25,7 @@ const account3 = {
   transactions: [500, -100, -40, 600, -50, 95, 455, -65],
   interestRate: 3.75,
   pin: 3333,
-  movementsDates: ['2017-11-01T13:15:33.035Z', '2017-11-30T09:48:16.867Z', '2017-12-25T06:04:23.907Z', '2018-01-25T14:18:46.235Z', '2019-02-05T16:33:06.386Z', '2020-04-10T14:43:26.374Z', '2020-06-25T18:49:59.371Z', '2020-07-26T12:01:20.894Z'],
+  transactionDates: ['2017-11-01T13:15:33.035Z', '2017-11-30T09:48:16.867Z', '2017-12-25T06:04:23.907Z', '2018-01-25T14:18:46.235Z', '2019-02-05T16:33:06.386Z', '2020-04-10T14:43:26.374Z', '2020-06-25T18:49:59.371Z', '2020-07-26T12:01:20.894Z'],
   currency: 'USD',
   locale: 'en-US',
 };
@@ -35,7 +35,7 @@ const account4 = {
   transactions: [1430, 900, -700, 250, -90],
   interestRate: 0.4,
   pin: 4444,
-  movementsDates: ['2019-11-15T21:31:17.178Z', '2019-12-13T07:42:02.383Z', '2020-01-18T09:15:04.904Z', '2020-04-02T10:17:24.185Z', '2020-05-07T14:11:59.604Z', '2020-05-17T17:01:17.194Z', '2020-07-11T23:36:17.929Z', '2020-07-12T10:51:36.790Z'],
+  transactionDates: ['2019-11-15T21:31:17.178Z', '2019-12-13T07:42:02.383Z', '2020-01-18T09:15:04.904Z', '2020-04-02T10:17:24.185Z', '2020-05-07T14:11:59.604Z', '2020-05-17T17:01:17.194Z', '2020-07-11T23:36:17.929Z', '2020-07-12T10:51:36.790Z'],
   currency: 'EUR',
   locale: 'de-DE', // de-DE
 };
@@ -131,7 +131,7 @@ btnClose.addEventListener('click', function (e) {
 btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   isSorted = !isSorted;
-  displayTransactions(activeAccount.transactions, isSorted);
+  displayTransactions(activeAccount, isSorted);
   colorAlternateRows();
 });
 
@@ -170,17 +170,24 @@ const displayDate = function () {
   labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 };
 
-const displayTransactions = function (transactions, sort = false) {
+const displayTransactions = function (account, sort = false) {
   containerTransactions.innerHTML = '';
 
-  let trans = sort ? transactions.slice().sort((a, b) => a - b) : transactions;
+  let trans = sort ? account.transactions.slice().sort((a, b) => a - b) : account.transactions;
 
   for (let [index, transaction] of trans.entries()) {
     const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
 
+    const date = new Date(account.transactionDates[index]);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const year = date.getFullYear();
+    const displayDate = `${day}/${month}/${year}`;
+
     const html = `
     <div class="transactions__row">
     <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
+    <div class="transactions__date">${displayDate}</div>
     <div class="transactions__value">${transaction.toFixed(2)}€</div>
     </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', html);
@@ -226,7 +233,7 @@ const displaySummary = function (account) {
 
 const updateUI = function (account) {
   displayDate();
-  displayTransactions(activeAccount?.transactions);
+  displayTransactions(activeAccount);
   displayBalance(activeAccount);
   displaySummary(activeAccount);
   colorAlternateRows();
