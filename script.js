@@ -67,9 +67,8 @@ const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
-let activeAccount;
-let activeAccountBalance;
-let isSorted;
+let activeAccount, activeAccountBalance, isSorted;
+let timer;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (submit)
@@ -100,6 +99,8 @@ btnTransfer.addEventListener('click', function (e) {
 
   updateUI(activeAccount);
   clearInputFields();
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
 
 btnLoan.addEventListener('click', function (e) {
@@ -115,6 +116,8 @@ btnLoan.addEventListener('click', function (e) {
   }, 2000);
 
   inputLoanAmount.value = '';
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
 
 btnClose.addEventListener('click', function (e) {
@@ -139,6 +142,8 @@ btnSort.addEventListener('click', function (e) {
   isSorted = !isSorted;
   displayTransactions(activeAccount, isSorted);
   colorAlternateRows();
+  clearInterval(timer);
+  timer = startLogoutTimer();
 });
 
 const generateUsernames = function (accounts) {
@@ -198,6 +203,10 @@ const formatCurrency = function (value, locale, currency) {
   }).format(value);
 };
 
+const colorAlternateRows = function () {
+  [...document.querySelectorAll('.transactions__row')].forEach((row, i) => (row.style.backgroundColor = `${i % 2 === 0 ? 'white' : '#f3f3f3'}`));
+};
+
 const displayTransactions = function (account, sort = false) {
   containerTransactions.innerHTML = '';
 
@@ -254,6 +263,28 @@ const displayInterest = function (account) {
   labelSumInterest.textContent = formatCurrency(interest, account.locale, account.currency);
 };
 
+const startLogoutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(Math.trunc(time % 60)).padStart(2, 0);
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+    }
+
+    time--;
+  };
+
+  let time = 300;
+  tick();
+
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
 const displaySummary = function (account) {
   displayTotalDeposits(account);
   displayTotalWithdrawals(account);
@@ -261,6 +292,9 @@ const displaySummary = function (account) {
 };
 
 const updateUI = function (account) {
+  if (timer) clearInterval(timer);
+  timer = startLogoutTimer();
+
   displayDate();
   displayTransactions(activeAccount);
   displayBalance(activeAccount);
@@ -270,7 +304,3 @@ const updateUI = function (account) {
 };
 
 generateUsernames(accounts);
-
-const colorAlternateRows = function () {
-  [...document.querySelectorAll('.transactions__row')].forEach((row, i) => (row.style.backgroundColor = `${i % 2 === 0 ? 'white' : '#f3f3f3'}`));
-};
