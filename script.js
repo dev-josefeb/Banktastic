@@ -5,7 +5,7 @@ const account1 = {
   transactions: [500, -350, 560, 800, -60, 1130, 2270, -300],
   interestRate: 2.1,
   pin: 1111,
-  transactionDates: ['2019-11-18T21:31:17.178Z', '2019-12-23T07:42:02.383Z', '2020-01-28T09:15:04.904Z', '2020-04-01T10:17:24.185Z', '2020-05-08T14:11:59.604Z', '2020-05-27T17:01:17.194Z', '2020-07-11T23:36:17.929Z', '2020-07-12T10:51:36.790Z'],
+  transactionDates: ['2019-11-18T21:31:17.178Z', '2019-12-23T07:42:02.383Z', '2020-01-28T09:15:04.904Z', '2020-04-01T10:17:24.185Z', '2020-05-08T14:11:59.604Z', '2020-05-27T17:01:17.194Z', '2021-03-14T23:36:17.929Z', '2021-03-17T10:51:36.790Z'],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
 };
@@ -172,6 +172,13 @@ const displayDate = function () {
 };
 
 const formatTransactionDate = function (date) {
+  const calcDaysPassed = (date1, date2) => Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+  const daysPassed = calcDaysPassed(new Date(), date);
+
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+
   const day = `${date.getDate()}`.padStart(2, 0);
   const month = `${date.getMonth() + 1}`.padStart(2, 0);
   const year = date.getFullYear();
