@@ -88,7 +88,7 @@ btnTransfer.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (on submit)
 
   const transferUsername = inputTransferTo.value;
-  const transferAmount = +inputTransferAmount.value;
+  const transferAmount = (+inputTransferAmount.value).toFixed(2);
 
   const transferUser = accounts.find(el => el.username === transferUsername);
 
@@ -170,7 +170,7 @@ const displayTransactions = function (transactions, sort = false) {
     const html = `
     <div class="transactions__row">
     <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
-    <div class="transactions__value">${transaction}€</div>
+    <div class="transactions__value">${transaction.toFixed(2)}€</div>
     </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', html);
   }
@@ -178,11 +178,15 @@ const displayTransactions = function (transactions, sort = false) {
 
 const displayBalance = function (account) {
   activeAccountBalance = account.transactions.reduce((acc, cur) => acc + cur);
-  labelBalance.textContent = activeAccountBalance + '€';
+  labelBalance.textContent = activeAccountBalance.toFixed(2) + '€';
 };
 
 const displayTotalDeposits = function (account) {
-  labelSumIn.textContent = account.filter(val => val > 0).reduce((acc, el) => (acc += el)) + '€';
+  labelSumIn.textContent =
+    account
+      .filter(val => val > 0)
+      .reduce((acc, el) => (acc += el))
+      .toFixed(2) + '€';
 };
 
 const displayTotalWithdrawals = function (account) {
@@ -190,7 +194,8 @@ const displayTotalWithdrawals = function (account) {
     account
       .filter(val => val < 0)
       .map(val => val * -1)
-      .reduce((acc, el) => (acc += el)) + '€';
+      .reduce((acc, el) => (acc += el))
+      .toFixed(2) + '€';
 };
 
 const displayInterest = function (account) {
