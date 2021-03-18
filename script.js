@@ -75,7 +75,7 @@ btnLogin.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (submit)
 
   const username = inputLoginUsername.value;
-  const password = Number(inputLoginPin.value);
+  const password = +inputLoginPin.value;
 
   activeAccount = accounts.find(el => el.username === username && el.pin === password);
 
@@ -88,7 +88,7 @@ btnTransfer.addEventListener('click', function (e) {
   e.preventDefault(); // Prevent form from reloading from login (on submit)
 
   const transferUsername = inputTransferTo.value;
-  const transferAmount = Number(inputTransferAmount.value);
+  const transferAmount = +inputTransferAmount.value;
 
   const transferUser = accounts.find(el => el.username === transferUsername);
 
@@ -102,7 +102,7 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
-  const loanAmount = Number(inputLoanAmount.value);
+  const loanAmount = +inputLoanAmount.value;
 
   if (loanAmount <= 0 || !activeAccount.transactions.some(tr => tr >= loanAmount * 0.1)) return;
 
@@ -115,7 +115,7 @@ btnClose.addEventListener('click', function (e) {
   e.preventDefault();
 
   const inputUsername = inputCloseUsername.value;
-  const inputUserPin = Number(inputClosePin.value);
+  const inputUserPin = +inputClosePin.value;
 
   if (inputUsername !== activeAccount.username || inputUserPin !== activeAccount.pin) return;
 
