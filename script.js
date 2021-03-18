@@ -188,6 +188,13 @@ const formatTransactionDate = function (date, locale) {
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
+const formatCurrency = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayTransactions = function (account, sort = false) {
   containerTransactions.innerHTML = '';
 
@@ -199,11 +206,13 @@ const displayTransactions = function (account, sort = false) {
     const date = new Date(account.transactionDates[index]);
     const displayDate = formatTransactionDate(date, activeAccount.locale);
 
+    const formattedTransaction = formatCurrency(transaction, account.locale, account.currency);
+
     const html = `
     <div class="transactions__row">
     <div class="transactions__type transactions__type--${transactionType}">${index + 1}- ${transactionType}</div>
     <div class="transactions__date">${displayDate}</div>
-    <div class="transactions__value">${transaction}€</div>
+    <div class="transactions__value">${formattedTransaction}</div>
     </div>`;
     containerTransactions.insertAdjacentHTML('afterbegin', html);
   }
@@ -211,38 +220,40 @@ const displayTransactions = function (account, sort = false) {
 
 const displayBalance = function (account) {
   activeAccountBalance = account.transactions.reduce((acc, cur) => acc + cur);
-  labelBalance.textContent = activeAccountBalance.toFixed(2) + '€';
+  labelBalance.textContent = formatCurrency(activeAccountBalance.toFixed(2), account.locale, account.currency);
 };
 
 const displayTotalDeposits = function (account) {
-  labelSumIn.textContent =
-    account
-      .filter(val => val > 0)
-      .reduce((acc, el) => (acc += el))
-      .toFixed(2) + '€';
+  let deposits = account.transactions
+    .filter(val => val > 0)
+    .reduce((acc, el) => (acc += el))
+    .toFixed(2);
+
+  labelSumIn.textContent = formatCurrency(deposits, account.locale, account.currency);
 };
 
 const displayTotalWithdrawals = function (account) {
-  labelSumOut.textContent =
-    account
-      .filter(val => val < 0)
-      .map(val => val * -1)
-      .reduce((acc, el) => (acc += el))
-      .toFixed(2) + '€';
+  let withdrawals = account.transactions
+    .filter(val => val < 0)
+    .map(val => val * -1)
+    .reduce((acc, el) => (acc += el))
+    .toFixed(2);
+  labelSumOut.textContent = formatCurrency(withdrawals, account.locale, account.currency);
 };
 
 const displayInterest = function (account) {
-  labelSumInterest.textContent =
-    account.transactions
-      .map(val => val * account.interestRate * 0.01)
-      .filter(val => val >= 1)
-      .reduce((acc, el) => (acc += el))
-      .toFixed(2) + '€';
+  let interest = account.transactions
+    .map(val => val * account.interestRate * 0.01)
+    .filter(val => val >= 1)
+    .reduce((acc, el) => (acc += el))
+    .toFixed(2);
+
+  labelSumInterest.textContent = formatCurrency(interest, account.locale, account.currency);
 };
 
 const displaySummary = function (account) {
-  displayTotalDeposits(account.transactions);
-  displayTotalWithdrawals(account.transactions);
+  displayTotalDeposits(account);
+  displayTotalWithdrawals(account);
   displayInterest(account);
 };
 
