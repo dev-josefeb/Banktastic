@@ -132,6 +132,7 @@ btnSort.addEventListener('click', function (e) {
   e.preventDefault();
   isSorted = !isSorted;
   displayTransactions(activeAccount.transactions, isSorted);
+  colorAlternateRows();
 });
 
 const generateUsernames = function (accounts) {
@@ -217,7 +218,12 @@ const updateUI = function (account) {
   displayTransactions(activeAccount?.transactions);
   displayBalance(activeAccount);
   displaySummary(activeAccount);
+  colorAlternateRows();
   clearTransferFields();
 };
 
 generateUsernames(accounts);
+
+const colorAlternateRows = function () {
+  [...document.querySelectorAll('.transactions__row')].forEach((row, i) => (row.style.backgroundColor = `${i % 2 === 0 ? 'white' : '#f3f3f3'}`));
+};
