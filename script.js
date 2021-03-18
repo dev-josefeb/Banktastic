@@ -110,7 +110,6 @@ btnLoan.addEventListener('click', function (e) {
 
   activeAccount.transactions.push(loanAmount);
   activeAccount.transactionDates.push(new Date().toISOString());
-  console.log(activeAccount);
   updateUI(activeAccount);
   inputLoanAmount.value = '';
 });
@@ -166,12 +165,17 @@ const displayWelcomeUI = function () {
 
 const displayDate = function () {
   const now = new Date();
-  const day = `${now.getDate()}`.padStart(2, 0);
-  const month = `${now.getMonth() + 1}`.padStart(2, 0);
-  const year = now.getFullYear();
+
   const hour = `${now.getHours()}`.padStart(2, 0);
   const min = `${now.getMinutes()}`.padStart(2, 0);
-  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+  labelDate.textContent = `${formatTransactionDate(now)}, ${hour}:${min}`;
+};
+
+const formatTransactionDate = function (date) {
+  const day = `${date.getDate()}`.padStart(2, 0);
+  const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 };
 
 const displayTransactions = function (account, sort = false) {
@@ -183,10 +187,7 @@ const displayTransactions = function (account, sort = false) {
     const transactionType = transaction > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(account.transactionDates[index]);
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-    const displayDate = `${day}/${month}/${year}`;
+    const displayDate = formatTransactionDate(date);
 
     const html = `
     <div class="transactions__row">
